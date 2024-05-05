@@ -5,7 +5,7 @@ import requests
 import logging
 import re
 from urllib.parse import urljoin
-import multiprocessing
+import multiprocessing            # 多进程加速
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s: %(message)s')
@@ -75,8 +75,8 @@ def parse_detail(html):
     :return: data
     """
 
-    cover_pattern = re.compile(
-        'class="item.*?<img.*?src="(.*?)".*?class="cover">', re.S)
+    cover_pattern = re.compile(                                                 # 这是什么意思，为什么这里也要用compile
+        'class="item.*?<img.*?src="(.*?)".*?class="cover">', re.S)              # 我不理解为什么前面有个item
     name_pattern = re.compile('<h2.*?>(.*?)</h2>')
     categories_pattern = re.compile(
         '<button.*?category.*?<span>(.*?)</span>.*?</button>', re.S)
