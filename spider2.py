@@ -2,10 +2,10 @@ import json
 from os import makedirs
 from os.path import exists
 import requests
-import logging
+import logging                     # 用于记录日志，追踪程序的运行情况。
 import re
-from urllib.parse import urljoin
-import multiprocessing            # 多进程加速
+from urllib.parse import urljoin   # urllib.parse：用于处理和解析URL。
+import multiprocessing             # 多进程加速
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s: %(message)s')
@@ -17,7 +17,7 @@ RESULTS_DIR = 'results'
 exists(RESULTS_DIR) or makedirs(RESULTS_DIR)
 
 
-def scrape_page(url):
+def scrape_page(url):                          # 获取给定URL的页面HTML。如果HTTP状态码为200，则返回页面内容，否则记录错误。
     """
     scrape page by url and return its html
     :param url: page url
@@ -34,7 +34,7 @@ def scrape_page(url):
         logging.error('error occurred while scraping %s', url, exc_info=True)
 
 
-def scrape_index(page):
+def scrape_index(page):                       # 爬取索引页并返回HTML内容。
     """
     scrape index page and return its html
     :param page: page of index page
@@ -44,7 +44,7 @@ def scrape_index(page):
     return scrape_page(index_url)
 
 
-def parse_index(html):
+def parse_index(html):                        # 从索引页HTML中解析出详情页的URL。
     """
     parse index page and return detail url
     :param html: html of index page
@@ -59,7 +59,7 @@ def parse_index(html):
         yield detail_url
 
 
-def scrape_detail(url):
+def scrape_detail(url):                       # 爬取详情页并返回HTML内容。
     """
     scrape detail page and return its html
     :param page: page of detail page
@@ -68,15 +68,15 @@ def scrape_detail(url):
     return scrape_page(url)
 
 
-def parse_detail(html):
+def parse_detail(html):                       # 从详情页HTML中解析出具体的数据（如封面、名称、分类、上映日期、剧情、评分）。
     """
     parse detail page
     :param html: html of detail page
     :return: data
     """
 
-    cover_pattern = re.compile(                                                 # 这是什么意思，为什么这里也要用compile
-        'class="item.*?<img.*?src="(.*?)".*?class="cover">', re.S)              # 我不理解为什么前面有个item
+    cover_pattern = re.compile(                                                 # 这是什么意思，为什么这里也要用compile：编译正则表达式的，这样做可以提升正则表达式的执行效率，特别是当同一个表达式需要被多次使用时。编译后的正则表达式对象可以重复使用，避免了每次匹配时都重新编译，从而提高性能。
+        'class="item.*?<img.*?src="(.*?)".*?class="cover">', re.S)              # 我不理解为什么前面有个item：网页原数据
     name_pattern = re.compile('<h2.*?>(.*?)</h2>')
     categories_pattern = re.compile(
         '<button.*?category.*?<span>(.*?)</span>.*?</button>', re.S)
